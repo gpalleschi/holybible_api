@@ -4,12 +4,12 @@ Bible API RESTful Node.js based Multilingual
 
 ### API
 
-#### Versions Api
+### Versions Api
 Return all bible versions loaded.
 
 `http://localhost:35907/versions`
 
-#####Examples :   
+####Examples :   
 
 `http://localhost:35907/random?versions`
 ```
@@ -41,14 +41,14 @@ Return all bible versions loaded.
 ]
 ```
 
-#### Random Api
+### Random Api
 Return a random verse.
 
 `http://localhost:35907/random?language=[Language]`
 
 Actually values for [Language] : es (spanish), it (italian), en (english)
 
-#####Examples :   
+####Examples :   
 
 `http://localhost:35907/random?language=it`
 
@@ -90,20 +90,20 @@ Actually values for [Language] : es (spanish), it (italian), en (english)
 * Node v16.13.1 or upper
 * npm  v7.19.1 or upper
 
-#### Built With  
+### Built With  
 * [Visual Code Editor](https://code.visualstudio.com)  
 
-#### NPM Modules
+### NPM Modules
 npm install  
 
-#### Run
+### Run
 npm start
 
-#### Authors  
+### Authors  
 
 * **Giovanni Palleschi** - [gpalleschi](https://github.com/gpalleschi)  
 
 
-#### License
+### License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE 3.0 License - see the [LICENSE](LICENSE) file for details 
