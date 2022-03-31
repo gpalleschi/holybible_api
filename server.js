@@ -4,39 +4,9 @@ const cors = require('cors');
 //import * as Constants from './controllers/constants';
 const Constants = require('./controllers/constants');
 const dbBible = require ('./controllers/dbBible');
+const checkFun = require ('./controllers/checkFun');
 //import { dbBible } from './controllers/dbBible.js';
 
-
-
-const checkParameters = (language, version) => {
-	let retValue = { 'error' : null,
-                         'bible' : null};
-	if ( typeof language === 'undefined' ) {
-	   retValue = {'error' : 'Error language parameter not present.'};
-	}
-	else {
-	   if ( Constants.LANGUAGES.includes(language) === false ) {
-	      retValue = {'error' : 'Error language <' + language + '> not managed.'}
-	   }
-	}
-	if ( retValue.error === null ) {
-           let i; 
-           for (i = 0; i < Constants.BIBLES_VERSIONS.length; i++) {
-	       if ( Constants.BIBLES_VERSIONS[i].language === language &&
-		    ((typeof version != 'undefined' && Constants.BIBLES_VERSIONS[i].name === version) ||
-		    (typeof version === 'undefined' && Constants.BIBLES_VERSIONS[i].default === 'Y'))
-		  ) {
-	          retValue['bible'] = Constants.BIBLES_VERSIONS[i].file;
-	          break;	   
-               }
-           }
-
-	   if ( i === Constants.BIBLES_VERSIONS.length ) {
-	      retValue = {'error' : 'Error Bible version <' + version + '> for languge <' + language + '> not found.'};
-	   }
-	}	
-	return retValue;
-}
 
 // App definition
 const app = express();
@@ -55,25 +25,52 @@ app.get('/',(req,res)=>{
 
 // Return all Bibles versions loaded BIBLES_VERSIONS Constant Array
 app.get('/versions',(req,res)=>{
-	res.send(Constants.BIBLES_VERSIONS);
+	res.send({'versions' : Constants.BIBLES_VERSIONS});
+})
+
+// Return all languages managed
+app.get('/languages',(req,res)=>{
+	res.send({'languages' : Constants.LANGUAGES});
 })
 
 // Call random passing two parameters language={es, it, en} version={NR94, ESV, RVA15} [version is optional]
 app.get('/random',(req,res)=>{
 	const { language, version } = req.query;
-	const retBible = checkParameters( language, version);
+	const retBible = checkFun.checkParameters( language, version);
 
 	if ( retBible.error === null ) {
 	  const db = dbBible.dbBible(retBible);
 
 	  if ( db != null ) {
-		  const ret = dbBible.dbRandom(db, res);
+             const ret = dbBible.dbRandom(db, res, retBible);
+	  } else {
+	    res.status(400).json('Error Connection DB');
 	  }
 	} else {
 	  res.status(400).json(retBible);
 	}
 })
 
+// Find a string in all verses passing three parameters language={es, it, en} version={NR94, ESV, RVA15} [version is optional] search={ String to search }
+app.get('/find',(req,res)=>{
+	const { language, version, search } = req.query;
+	const retBible = checkFun.checkParameters( language, version);
+	const retCheck = checkFun.checkGenericParam('search', search);
+
+	if ( retCheck.error ) {
+	    res.status(400).json(retCheck);
+	}
+	else {
+	  if ( retBible.error === null ) {
+	     const db = dbBible.dbBible(retBible);
+	     if ( db != null ) {
+                const ret = dbBible.dbFind(db, res, retBible, search);
+	     } else {
+	       res.status(400).json('Error Connection DB');
+	     }
+	  }
+	}
+})
 
 console.log('Starting Server ...... ');
 

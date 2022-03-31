@@ -1,10 +1,10 @@
 // Constants
-const VERSION_SERVER = '1.0 30/03/2022 Beta';
+const VERSION_SERVER = '1.1 31/03/2022 Beta';
 const DEFAULT_PORT = 35907; 
 const DB_PATH = './db/';
 
 // Languages
-const LANGUAGES = ['it','es','en'];
+const LANGUAGES = ['it','es','en','fr','de'];
 
 // Bible Loaded
 const BIBLES_VERSIONS = [
@@ -26,7 +26,19 @@ const BIBLES_VERSIONS = [
 				'description' : 'Reina Valera Actualizada, 2015',
 				'detailed_info' : 'Version Reina Valera Actualizada, Copyright © 2015 by Editorial Mundo Hispano',
 				'file' : 'RVA15.SQLite3'},
-			       ];
+				{'language' : 'fr',
+				'name' : 'FRC97',
+				'default' : 'Y',
+				'description' : 'La Bible en français courant',
+				'detailed_info' : 'Current Language Bible - La Bible en français courant Copyright © 1997, Société biblique française.',
+				'file' : 'FRC97.SQLite3'},
+				{'language' : 'de',
+				'name' : 'ELBBK',
+				'default' : 'Y',
+				'description' : 'Elberfelder Übersetzung (Version von bibelkommentare.de)',
+				'detailed_info' : 'Elberfelder Translation (Version of bibelkommentare.de) - Elberfelder Übersetzung (Version von bibelkommentare.de)', 
+				'file' : 'ELBBK.SQLite3'},
+			];
 
 
 module.exports = {
