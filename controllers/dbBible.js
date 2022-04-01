@@ -23,11 +23,25 @@ const dbBible = (bibleInfo) => {
   return db;
 }
 
-const dbRandom = (db, res, retBible) => {
-     let ret = { error : null,
-                 info : null,
-                 verse : null };
+const dbBooks = (db, res, retBible) => {
 
+  db.select('book_number', 'short_name', 'long_name')
+    .from('books')
+    .orderBy('book_number')
+    .then( resbooks => {
+      let books = [];
+      for(let i=0;i<resbooks.length;i++) {
+        books.push(resbooks[i.toString()]);
+      }
+      const ret = utility.formatMsg(retBible, books, false);
+      res.status(200).json(Object.assign({},ret));	
+    })
+    .catch(err => {
+           res.status(401).json(utility.retErr(401,'dbBooks',err.code + ' : ' + err.message));	
+          })   
+}
+
+const dbRandom = (db, res, retBible) => {
      db('verses').count('verse as vrs')
      .then(count => {
             const verse = getRandomArbitrary(1,count[0].vrs);
@@ -45,20 +59,16 @@ const dbRandom = (db, res, retBible) => {
                res.status(200).json(Object.assign({},ret));	
             })
             .catch(err => {
-                    res.status(401).json(utility.retErr(401,'dbRandom',err.code));	
+                res.status(401).json(utility.retErr(401,'dbRandom',err.code + ' : ' + err.message));	
             })
      })
      .catch(err => {
           res.status(401).json(utility.retErr(401,'dbRandom',err.code));	
      }) 
-     return ret;
+     return;
 }
 
 const dbFind = (db, res, retBible, search) => {
-     let ret = { error : null,
-                 info : null,
-                 verse : null };
-
      db('books').join('verses','books.book_number','verses.book_number')
             .select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
             .whereLike('verses.text', '%grano%')
@@ -78,11 +88,11 @@ const dbFind = (db, res, retBible, search) => {
         .catch(err => {
                res.status(401).json(utility.retErr(401,'dbFind',err.stack));	
      })
-     return ret;
 }
 
 module.exports = {
   dbBible: dbBible,
   dbRandom: dbRandom,
+  dbBooks: dbBooks,
   dbFind: dbFind,
 };

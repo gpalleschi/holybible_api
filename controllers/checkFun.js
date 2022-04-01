@@ -1,6 +1,92 @@
 const Constants = require('./constants');
 const utility = require('./utility');
 
+// String format es. Ge.1-23;Le;
+const checkSearch = ( search ) =>  {
+
+	let toSearch = [];
+	let retValue = {'error' : null,
+                        'toSearch' : toSearch};
+
+
+	// toSearch format :
+	//   { 'input_string' : 'Ge.1-2'
+	//     'short_name' : 'Ge',
+	//     'from' : 1,
+	//     'to' : 2 }
+	const searches = search.split(';');
+
+	// Loop for searches strings
+	for(let i=0;i<searches.length;i++) {
+		console.log('Search : <' + searches[i] + '>');
+		let book = searches[i].split('.');
+		let input_string = searches[i];
+		let short_name = book[0];
+		if ( book[0].length === 0 ) {
+		   retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[0] + ' Book not present.';
+		   break;
+		}
+		
+		let from = null;
+		let to = null;
+		if ( book.length > 0 ) {
+			if ( book.length == 2 ) {
+			   let from_to = book[1].split('-');
+			   if ( from_to.length > 0 ) {
+		              if ( from_to.length == 1 ) {
+				 if ( !isNaN(from_to[0]) ) {
+		                    from = from_to[0];
+				 } else {
+			           retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[0] + ' Not numeric.';
+				   break;
+				 }    
+
+			      } else {
+		                if ( from_to.length == 2 ) {		   
+				   if ( !isNaN(from_to[0]) && from_to[0].length > 0 ) {
+		                      from = from_to[0];
+				   } else {
+			             retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[0] + ' Not numeric.';
+				     break;
+				   }    					
+    				   if ( !isNaN(from_to[1]) && from_to[1].length > 0 ) {
+		                      to = from_to[1];
+				   } else {
+			             retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[1] + ' Not numeric.';
+				     break;
+				   }    
+			        } else {
+			          // Condizione di errore tipo Ge.1-2-2	
+			          retValue.error = ' 1 Error in search string : ' + searches[i] + '.';
+			          break;
+				}
+
+			      }
+			   }
+			   toSearch.push({'input_string' : searches[i],
+	                                  'short_name' : short_name,
+	                                  'from' : from,
+	                                  'to' : to });
+
+
+			} else {
+			   if ( book.length == 1 ) {	
+			      toSearch.push({'input_string' : searches[i],
+	                                     'short_name' : short_name,
+	                                     'from' : from,
+	                                     'to' : to });
+			   }		   
+			   else {
+			     // Condizione di errore tipo Ge.1-2.2	
+			     retValue.error = 'Error in search string : ' + searches[i] + ' not in correct format.';
+			     break;
+			   }
+			}
+		}
+	}
+	return retValue;
+}
+
 const checkGenericParam = (nameParam, value) => {
 
 	let retValue = {'error' : null };
@@ -53,5 +139,6 @@ const checkParameters = (language, version) => {
 
 module.exports = {
   checkParameters : checkParameters,
-  checkGenericParam : checkGenericParam
+  checkGenericParam : checkGenericParam,
+  checkSearch : checkSearch
 };

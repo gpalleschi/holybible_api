@@ -1,5 +1,5 @@
 // Constants
-const VERSION_SERVER = '1.1 31/03/2022 Beta';
+const VERSION_SERVER = '1.2 31/03/2022 Beta';
 const DEFAULT_PORT = 35907; 
 const DB_PATH = './db/';
 
