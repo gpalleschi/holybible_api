@@ -6,9 +6,32 @@ const getRandomArbitrary = (min, max) => {
   return Math.trunc(Math.random() * (max + 1 - min) + min);
 }
 
+const getBook = (book, db, res) => {
+
+  let retBook = { 'error' : null,
+                  'book' : null,
+                  'chapters' : 0,
+                  'verses' : 0};
+
+  db('books').count('short_name as CNT')
+             .where('short_name','=',book)
+             .then( info => {
+               if ( !info[0].CNT ) {
+                 retBook['error'] = 'not exists.';
+               } else {
+                 retBook['book'] = book;
+               }
+               return retBook;
+             })
+             .catch(err => {
+               res.status(401).json(utility.retErr(401,'getBook',err.code + ' : ' + err.message));	
+               return retBook;
+             });  
+}
+
 const dbBible = (bibleInfo) => {
 	const dbFileName = Constants.DB_PATH + bibleInfo.bible;
-  const db = require('knex')({
+  const db =  require('knex')({
     client: 'better-sqlite3', // or 'better-sqlite3'
     connection: {
       filename: dbFileName 
@@ -25,9 +48,11 @@ const dbBible = (bibleInfo) => {
 
 const dbBooks = (db, res, retBible) => {
 
-  db.select('book_number', 'short_name', 'long_name')
+  db.select('books.book_number', 'short_name', 'long_name', db.raw('count(distinct chapter) as chapters, count(verse) as verses'))
     .from('books')
-    .orderBy('book_number')
+    .join('verses','books.book_number','verses.book_number')
+    .groupByRaw('books.book_number, short_name, long_name')
+    .orderBy('books.book_number')
     .then( resbooks => {
       let books = [];
       for(let i=0;i<resbooks.length;i++) {
@@ -45,13 +70,11 @@ const dbRandom = (db, res, retBible) => {
      db('verses').count('verse as vrs')
      .then(count => {
             const verse = getRandomArbitrary(1,count[0].vrs);
-            console.log('Verse : ' + verse);
             db.select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
             .from('books')                         
             .join('verses','books.book_number','verses.book_number')
             .where('verses.rowid','=',verse)
             .then( resVerse => {
-               console.log(Object.assign({},resVerse));
                let books = [];
                books.push(resVerse['0']);
                const ret = utility.formatMsg(retBible, books);
@@ -68,26 +91,31 @@ const dbRandom = (db, res, retBible) => {
      return;
 }
 
-const dbFind = (db, res, retBible, search) => {
-     db('books').join('verses','books.book_number','verses.book_number')
+const dbFind = async (db, res, retBible, searches) => {
+     let books = [];
+     for(let i=0;i<searches.length;i++) {
+       try { 
+       await db.transaction(async trx => {
+          await trx('books').join('verses','books.book_number','verses.book_number')
             .select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
-            .whereLike('verses.text', '%grano%')
+            .where('books.short_name', searches[i].short_name)
             .then( resVerses => {
-               console.log('resVerses : >' || resVerses || '<');
-               console.log(Object.assign({},resVerses));
-               let books = [];
-               if ( typeof resVerses['0'] === 'undefined' ) {
-                 const ret = utility.formatMsg(retBible, []);
-               } else {
-                 books.push(resVerses['0']);
-                 const ret = utility.formatMsg(retBible, books);
+               for(let j=0;j<resVerses.length;j++) {
+                  books.push(resVerses[j.toString()]);
                }
-               //res.status(200).json(Object.assign({},resVerse['0']));	
-               res.status(200).json(Object.assign({},ret));	
-        })
-        .catch(err => {
-               res.status(401).json(utility.retErr(401,'dbFind',err.stack));	
-     })
+            })
+            .catch(err => {
+               res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+               return;
+               exit;
+           })
+      })
+     } catch (error) {
+       res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+     }
+     }
+     const ret = utility.formatMsg(retBible, books);
+     res.status(200).json(Object.assign({},ret));	
 }
 
 module.exports = {
@@ -95,4 +123,5 @@ module.exports = {
   dbRandom: dbRandom,
   dbBooks: dbBooks,
   dbFind: dbFind,
+  getBook: getBook
 };

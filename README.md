@@ -59,6 +59,55 @@ Return all bible versions loaded.
 }
 ```
 
+### Books Api
+Return all books
+
+`http://localhost:35907/books?language=[Language]`
+
+####Examples :   
+
+`http://localhost:35907/random?language=en`
+
+```
+{
+  "language": "en",
+  "name": "ESV",
+  "description": "English Standard Version 2001, 2016",
+  "books": [
+    {
+      "book_number": 10,
+      "short_name": "Gen",
+      "long_name": "Genesis",
+      "chapters": 50,
+      "verses": 1533
+    },
+    {
+      "book_number": 20,
+      "short_name": "Exo",
+      "long_name": "Exodus",
+      "chapters": 40,
+      "verses": 1213
+    },
+    {
+      "book_number": 30,
+      "short_name": "Lev",
+      "long_name": "Leviticus",
+      "chapters": 27,
+      "verses": 859
+    },
+    {
+      "book_number": 40,
+      "short_name": "Num",
+      "long_name": "Numbers",
+      "chapters": 36,
+      "verses": 1288
+    },
+    ...
+    ...
+  ]
+}
+```
+
 ### Random Api
 Return a random verse.
 

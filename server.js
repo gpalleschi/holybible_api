@@ -5,6 +5,7 @@ const cors = require('cors');
 const Constants = require('./controllers/constants');
 const dbBible = require ('./controllers/dbBible');
 const checkFun = require ('./controllers/checkFun');
+const utility = require('./controllers/utility');
 //import { dbBible } from './controllers/dbBible.js';
 
 
@@ -75,29 +76,30 @@ app.get('/random',(req,res)=>{
 app.get('/find',(req,res)=>{
 	const { language, version, search } = req.query;
 	const retBible = checkFun.checkParameters( language, version);
+	if ( retBible.error != null ) {
+	   res.status(400).json(retBible.error);	
+	}	
 	const retCheck = checkFun.checkGenericParam('search', search);
-
-	const ret = checkFun.checkSearch(search);
-	res.status(200).json(ret);
-
-	/*
-	if ( retCheck.error ) {
-	    res.status(400).json(retCheck);
+        if ( retCheck.error ) {
+	     res.status(400).json(retCheck);
+	     return;
 	}
-	else {
-	  if ( retBible.error === null ) {
 
-             
-    
-	     const db = dbBible.dbBible(retBible);
-	     if ( db != null ) {
-                const ret = dbBible.dbFind(db, res, retBible, search);
-	     } else {
-	       res.status(400).json('Error Connection DB');
-	     }
-	  }
+	const db = dbBible.dbBible(retBible);
+	if ( db === null ) {
+	   res.status(400).json(utility.retErr(400,'find','Error Connection DB'));
+	   return;
+	}	
+
+	const retSearch = checkFun.checkSearch(search, db);
+	console.log('retSearch :' + JSON.stringify(retSearch) );
+
+	if ( retSearch.error ) {
+	   res.status(400).json(utility.retErr(400,'find',retSearch.error));
+	   return;
+	} else {
+	   dbBible.dbFind(db, res, retBible, retSearch['toSearch']);	
 	}
-	*/
 })
 
 console.log('Starting Server ...... ');

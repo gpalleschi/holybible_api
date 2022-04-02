@@ -24,7 +24,6 @@ const formatMsg = (infoBible, books, verse=true) => {
 	};
 
         let i;
-	console.log('books.length <' + books + '>');
 	for(i=0;i<books.length;i++) {
 		if ( previousBook != books[i].long_name ) {
 			if ( verse ) {
@@ -40,6 +39,8 @@ const formatMsg = (infoBible, books, verse=true) => {
 			   booksToAdd.push({"book_number": books[i].book_number,
                                             "short_name": books[i].short_name,
                                             "long_name": books[i].long_name,
+					    "chapters": books[i].chapters,
+					    "verses": books[i].verses,
 			                   });
 
 			}

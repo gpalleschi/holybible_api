@@ -1,7 +1,8 @@
 const Constants = require('./constants');
 const utility = require('./utility');
+const dbBible = require ('./dbBible');
 
-// String format es. Ge.1-23;Le;
+// String format es. Ge:1-23;Le;
 const checkSearch = ( search ) =>  {
 
 	let toSearch = [];
@@ -10,25 +11,36 @@ const checkSearch = ( search ) =>  {
 
 
 	// toSearch format :
-	//   { 'input_string' : 'Ge.1-2'
+	//   { 'input_string' : 'Ge.1:1-2'
 	//     'short_name' : 'Ge',
+	//     'chapter' : 1,
 	//     'from' : 1,
 	//     'to' : 2 }
 	const searches = search.split(';');
 
 	// Loop for searches strings
 	for(let i=0;i<searches.length;i++) {
-		console.log('Search : <' + searches[i] + '>');
 		let book = searches[i].split('.');
 		let input_string = searches[i];
 		let short_name = book[0];
 		if ( book[0].length === 0 ) {
-		   retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[0] + ' Book not present.';
+		   retValue.error = 'Error in search string : ' + searches[i] + ' Book ' + book[0] + ' not present.';
 		   break;
 		}
-		
+                let chapter = null;
 		let from = null;
 		let to = null;
+		if ( book.length > 2 ) {
+		   retValue.error = 'Error in search string : ' + searches[i] + ' too much . characters .';
+		   break;	
+		}	
+		if ( book.length > 1 ) {
+		   if ( !isNaN(book[1]) ) {
+                      chapter = book[1]; 
+		   } else {
+		      retValue.error = 'Error in search string : ' + searches[i] + ' chapter not numeric.';
+		      break;	
+		   }
 		if ( book.length > 0 ) {
 			if ( book.length == 2 ) {
 			   let from_to = book[1].split('-');
@@ -55,6 +67,11 @@ const checkSearch = ( search ) =>  {
 			             retValue.error = 'Error in search string : ' + searches[i] + ' verse : ' + from_to[1] + ' Not numeric.';
 				     break;
 				   }    
+
+				   if ( from > to ) {
+			             retValue.error = 'Error in search string : ' + searches[i] + ' verse to less than to.';
+				     break;
+				   }
 			        } else {
 			          // Condizione di errore tipo Ge.1-2-2	
 			          retValue.error = ' 1 Error in search string : ' + searches[i] + '.';
@@ -65,6 +82,7 @@ const checkSearch = ( search ) =>  {
 			   }
 			   toSearch.push({'input_string' : searches[i],
 	                                  'short_name' : short_name,
+					  'chapter' : chapter,
 	                                  'from' : from,
 	                                  'to' : to });
 
@@ -73,6 +91,7 @@ const checkSearch = ( search ) =>  {
 			   if ( book.length == 1 ) {	
 			      toSearch.push({'input_string' : searches[i],
 	                                     'short_name' : short_name,
+					     'chapter' : chapter,
 	                                     'from' : from,
 	                                     'to' : to });
 			   }		   
@@ -83,6 +102,7 @@ const checkSearch = ( search ) =>  {
 			   }
 			}
 		}
+	}
 	}
 	return retValue;
 }
