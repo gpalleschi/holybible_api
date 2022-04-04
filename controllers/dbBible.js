@@ -93,29 +93,51 @@ const dbRandom = (db, res, retBible) => {
 
 const dbFind = async (db, res, retBible, searches) => {
      let books = [];
+     let bError = false;
      for(let i=0;i<searches.length;i++) {
+
+       let chapterToFind = (searches[i].chapter === null)?'%%':searches[i].chapter; 
+       let verseFrom = (searches[i].from === null)?'0':searches[i].from
+       let verseTo = (searches[i].to === null)?'999':searches[i].to
+
        try { 
        await db.transaction(async trx => {
           await trx('books').join('verses','books.book_number','verses.book_number')
             .select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
             .where('books.short_name', searches[i].short_name)
+            .whereLike('verses.chapter',chapterToFind)
+            .where('verses.verse','>=',parseInt(verseFrom))
+            .where('verses.verse','<=',parseInt(verseTo))
             .then( resVerses => {
                for(let j=0;j<resVerses.length;j++) {
                   books.push(resVerses[j.toString()]);
                }
+
+               // If not return nothing 
+               if ( !resVerses.length ) {
+                  res.status(401).json(utility.retErr(401,'dbFind','Not results for ' + searches[i].input_string + ' .'));	
+                  bError = true;
+                  return;
+               }
             })
             .catch(err => {
                res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+               bError = true;
                return;
-               exit;
            })
       })
-     } catch (error) {
+     } catch (err) {
        res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+       bError = true;
+       return;
      }
      }
-     const ret = utility.formatMsg(retBible, books);
-     res.status(200).json(Object.assign({},ret));	
+     if ( !bError ) {
+        //res.status(200).json(Object.assign({},books));	
+        //return;
+        const ret = utility.formatMsg(retBible, books);
+        res.status(200).json(Object.assign({},ret));	
+     }
 }
 
 module.exports = {

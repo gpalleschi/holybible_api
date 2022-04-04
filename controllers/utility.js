@@ -14,27 +14,22 @@ const formatMsg = (infoBible, books, verse=true) => {
 	let previousBook = 'xyxyx';
 	let previousChapter = -1;
 	let booksToAdd = [];
-	let chaptersToAdd = [];
-	let versesToAdd = [];
 
 	let retMsg = { "language" : infoBible.language,
-                    "name": infoBible.version,
-                    "description": infoBible.description,
-		    "books" : booksToAdd
+                       "name": infoBible.version,
+                       "description": infoBible.description,
+		       "books" : []
 	};
 
         let i;
 	for(i=0;i<books.length;i++) {
 		if ( previousBook != books[i].long_name ) {
 			if ( verse ) {
-
 			   booksToAdd.push({"book_number": books[i].book_number,
                                             "short_name": books[i].short_name,
                                             "long_name": books[i].long_name,
-                                            "chapters" : chaptersToAdd
+                                            "chapters" : []
 			                   });
-			   chaptersToAdd.splice(0, chaptersToAdd.length);
-			   versesToAdd.slice(0,versesToAdd.length);
 			} else {
 			   booksToAdd.push({"book_number": books[i].book_number,
                                             "short_name": books[i].short_name,
@@ -49,15 +44,18 @@ const formatMsg = (infoBible, books, verse=true) => {
 		if ( verse ) {
 
 		   if ( previousChapter != books[i].chapter ) {
-		          chaptersToAdd.push({"chapter" : books[i].chapter,
-		                              "verses" : versesToAdd})	  
-		          versesToAdd.slice(0,versesToAdd.length);
+		          booksToAdd[booksToAdd.length-1].chapters.push({"chapter" : books[i].chapter,
+		                                                         "verses" : []})	  
 		          previousChapter = books[i].chapter;			  
 		   }
-   	           versesToAdd.push({"verse": books[i].verse,
-			             "text" : books[i].text});
+
+		   booksToAdd[booksToAdd.length-1].chapters[booksToAdd[booksToAdd.length-1]
+		             .chapters.length-1].verses.push({"verse": books[i].verse,
+			                                      "text" : books[i].text});
 		}
 	}
+	retMsg.books = booksToAdd;
+
 	return retMsg;
 }
 

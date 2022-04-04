@@ -92,8 +92,8 @@ app.get('/find',(req,res)=>{
 	}	
 
 	const retSearch = checkFun.checkSearch(search, db);
-	console.log('retSearch :' + JSON.stringify(retSearch) );
-
+	//res.status(200).json(Object.assign({},retSearch));	
+        
 	if ( retSearch.error ) {
 	   res.status(400).json(utility.retErr(400,'find',retSearch.error));
 	   return;

@@ -2,7 +2,7 @@ const Constants = require('./constants');
 const utility = require('./utility');
 const dbBible = require ('./dbBible');
 
-// String format es. Ge:1-23;Le;
+// String format es. Ge.3:1-23;Le
 const checkSearch = ( search ) =>  {
 
 	let toSearch = [];
@@ -35,15 +35,22 @@ const checkSearch = ( search ) =>  {
 		   break;	
 		}	
 		if ( book.length > 1 ) {
-		   if ( !isNaN(book[1]) ) {
-                      chapter = book[1]; 
+		   const verses = book[1].split(':');
+		   if ( !isNaN(verses[0]) ) {
+                      chapter = verses[0]; 
 		   } else {
 		      retValue.error = 'Error in search string : ' + searches[i] + ' chapter not numeric.';
 		      break;	
 		   }
-		if ( book.length > 0 ) {
-			if ( book.length == 2 ) {
-			   let from_to = book[1].split('-');
+
+		   if ( verses.length > 2 ) {
+		      retValue.error = 'Error in search string : ' + searches[i] + ' too much : characters.';
+		      break;	
+		   }
+
+		   if ( verses.length > 1 ) {
+			if ( verses.length == 2 ) {
+			   let from_to = verses[1].split('-');
 			   if ( from_to.length > 0 ) {
 		              if ( from_to.length == 1 ) {
 				 if ( !isNaN(from_to[0]) ) {
@@ -74,7 +81,7 @@ const checkSearch = ( search ) =>  {
 				   }
 			        } else {
 			          // Condizione di errore tipo Ge.1-2-2	
-			          retValue.error = ' 1 Error in search string : ' + searches[i] + '.';
+			          retValue.error = 'Error in search string : ' + searches[i] + ' too much - characters.';
 			          break;
 				}
 
@@ -85,10 +92,8 @@ const checkSearch = ( search ) =>  {
 					  'chapter' : chapter,
 	                                  'from' : from,
 	                                  'to' : to });
-
-
 			} else {
-			   if ( book.length == 1 ) {	
+			   if ( verses.length == 1 ) {	
 			      toSearch.push({'input_string' : searches[i],
 	                                     'short_name' : short_name,
 					     'chapter' : chapter,
@@ -96,13 +101,24 @@ const checkSearch = ( search ) =>  {
 	                                     'to' : to });
 			   }		   
 			   else {
-			     // Condizione di errore tipo Ge.1-2.2	
 			     retValue.error = 'Error in search string : ' + searches[i] + ' not in correct format.';
 			     break;
 			   }
 			}
+		   } else {
+		      toSearch.push({'input_string' : searches[i],
+	                             'short_name' : short_name,
+		         	     'chapter' : chapter,
+	                             'from' : from,
+	                             'to' : to });
+		   }
+	        } else {
+		      toSearch.push({'input_string' : searches[i],
+	                             'short_name' : short_name,
+		         	     'chapter' : chapter,
+	                             'from' : from,
+	                             'to' : to });			
 		}
-	}
 	}
 	return retValue;
 }
