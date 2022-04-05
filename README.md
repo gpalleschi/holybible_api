@@ -1,5 +1,5 @@
 # holybible_api
-Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English) to find, search words holy bible verses.  
+Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English) to get verses, chapters or search words, sentence.  
 <hr />
 
 ### API
