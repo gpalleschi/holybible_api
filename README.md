@@ -1,5 +1,5 @@
 # holybible_api
-Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English) 
+Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English) to find, search words holy bible verses.  
 <hr />
 
 ### API
@@ -121,11 +121,11 @@ Syntax for [String Search] is :
 
 ####Ex.
 
-Ge.1:2-3
-Le.4
-Ru
+Ge.1:2-3 - Genesis chapter 1 from verses 2 to 3
+Le.4     - Leviticus chapter 4
+Ru       - All Ruth
 
-You can specify more than one extraction separating each other with ;.
+You can specify more than one extraction, separating each other with character ; (Ex. Num.12:1-2;Deu.1:3;Jona:1)   
 
 ####Examples :
 
@@ -177,40 +177,15 @@ You can specify more than one extraction separating each other with ;.
 ### Random Api
 Return a random verse.
 
-`http://localhost:35907/random?language=[Language]`
+`http://localhost:35907/random?language=[Language]&book=[book short name]`
 
 Actually values for [Language] : es (spanish), it (italian), en (english), fr (french), de (german)  
+Book is an optional parameter.
 
 ####Examples :   
 
-`http://localhost:35907/random?language=it`
-
-```
-{
-  "language": "it",
-  "name": "NR94",
-  "description": "Nuova Riveduta 1994",
-  "books": [
-    {
-      "book_number": 330,
-      "short_name": "Ez",
-      "long_name": "Ezechiele",
-      "chapters": [
-        {
-          "chapter": 43,
-          "verses": [
-            {
-              "verse": 9,
-              "text": "Ora allontaneranno da me le loro prostituzioni e i cadaveri dei loro re, e io abiterò in mezzo a loro per sempre."
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
 `http://localhost:35907/random?language=es`
+
 ```
 {
   "language": "es",
@@ -236,32 +211,49 @@ Actually values for [Language] : es (spanish), it (italian), en (english), fr (f
   ]
 }
 ```
-`http://localhost:35907/random?language=en`
+
+### Search Api
+Return verses contains a word or a sentence.
+
+`http://localhost:35907/search?language=en&word=[Language]&limit=[Limit results]`
+
+Actually values for [Language] : es (spanish), it (italian), en (english), fr (french), de (german)  
+word is what do you want to search.
+limit is an optional parameter to limit results.
+
+####Examples :   
+
 ```
+`http://localhost:35907/search?language=en&word=bread&limit=2`
+
 {
   "language": "en",
   "name": "ESV",
   "description": "English Standard Version 2001, 2016",
-  "books": [
+  "search": "bread",
+  "total": 376,
+  "limit": 2,
+  "searches": [
     {
-      "book_number": 300,
-      "short_name": "Jer",
-      "long_name": "Jeremiah",
-      "chapters": [
-        {
-          "chapter": 18,
-          "verses": [
-            {
-              "verse": 9,
-              "text": "And if at any time I declare concerning a nation or a kingdom that I will <f>ⓙ</f>build and plant it,"
-            }
-          ]
-        }
-      ]
+      "book_number": 10,
+      "short_name": "Gen",
+      "long_name": "Genesis",
+      "chapter": 3,
+      "verse": 19,
+      "text": "<t>By the sweat of your face </t><t>you shall eat bread, </t><t>till you return to the ground, </t><t>for out of it you were taken; </t><t><f>ⓤ</f>for you are dust, </t><t>and <f>ⓥ</f>to dust you shall return.” </t>"
+    },
+    {
+      "book_number": 10,
+      "short_name": "Gen",
+      "long_name": "Genesis",
+      "chapter": 6,
+      "verse": 15,
+      "text": "This is how you are to make it: the length of the ark 300 cubits, <f>[5]</f> its breadth 50 cubits, and its height 30 cubits."
     }
   ]
 }
 ```
+
 ### Prerequisites  
 
 * Node v16.13.1 or upper

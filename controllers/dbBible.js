@@ -67,6 +67,7 @@ const dbBooks = (db, res, retBible) => {
 }
 
 const dbRandom = (db, res, retBible) => {
+
      db('verses').count('verse as vrs')
      .then(count => {
             const verse = getRandomArbitrary(1,count[0].vrs);
@@ -86,7 +87,7 @@ const dbRandom = (db, res, retBible) => {
             })
      })
      .catch(err => {
-          res.status(401).json(utility.retErr(401,'dbRandom',err.code));	
+          res.status(401).json(utility.retErr(401,'dbRandom',err.code + ' : ' + err.message));	
      }) 
      return;
 }
@@ -94,11 +95,12 @@ const dbRandom = (db, res, retBible) => {
 const dbFind = async (db, res, retBible, searches) => {
      let books = [];
      let bError = false;
+
      for(let i=0;i<searches.length;i++) {
 
        let chapterToFind = (searches[i].chapter === null)?'%%':searches[i].chapter; 
        let verseFrom = (searches[i].from === null)?'0':searches[i].from
-       let verseTo = (searches[i].to === null)?'999':searches[i].to
+       let verseTo = (searches[i].to === null && searches[i].from === null)?'999':((searches[i].to === null)?searches[i].from:searches[i].to)
 
        try { 
        await db.transaction(async trx => {
@@ -127,8 +129,10 @@ const dbFind = async (db, res, retBible, searches) => {
            })
       })
      } catch (err) {
-       res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
-       bError = true;
+       if ( !bError ) {
+          res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+          bError = true;
+       }
        return;
      }
      }
@@ -140,10 +144,61 @@ const dbFind = async (db, res, retBible, searches) => {
      }
 }
 
+const dbSearch = async (db, res, retBible, word, limit=99999) => {
+     let books = [];
+     let bError = false;
+     let totSearches = 0;
+
+     let retSearch = { "language" : retBible.language,
+                       "name": retBible.version,
+                       "description": retBible.description,
+                       "search" : word,
+                       "total"  : 0,
+                       "limit"  : parseInt(limit),
+		                   "searches" : [] }
+
+     try { 
+        await db.transaction(async trx => {
+
+          trx('verses').select('books.book_number','books.short_name','books.long_name','verses.chapter','verses.verse','verses.text')
+                       //.count('verses.verse as total')
+                       .from('books')
+                       .join('verses','books.book_number','verses.book_number')
+                       .whereLike('verses.text','%' + word + '%')
+                       //.groupByRaw('books.short_name')
+                       .orderBy('books.book_number','verses.chapter','verses.verse')
+                       .then( resStats => {
+                              for(let j=0;j<resStats.length;j++) {
+                                 //console.log(resStats[j.toString()]);
+                                 retSearch.searches.push(resStats[j.toString()]);
+                                 if ( j+1 >= limit ) break;
+                              }
+                              retSearch.total = resStats.length;;
+                              if ( !bError ) {
+                                 res.status(200).json(retSearch);	
+                              }
+                       })
+                       .catch(err => {
+                              res.status(401).json(utility.retErr(401,'dbSearch',err.code + ' : ' + err.message));	
+                              bError = true;
+                              return;
+                       })
+          })
+
+        } catch (err) {
+          if ( !bError ) {
+             res.status(401).json(utility.retErr(401,'dbFind',err.code + ' : ' + err.message));	
+             bError = true;
+          }
+          return;
+        }                  
+}
+
 module.exports = {
   dbBible: dbBible,
   dbRandom: dbRandom,
   dbBooks: dbBooks,
   dbFind: dbFind,
+  dbSearch: dbSearch,
   getBook: getBook
 };

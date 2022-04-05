@@ -72,7 +72,7 @@ app.get('/random',(req,res)=>{
 	}
 })
 
-// Find a string in all verses passing three parameters language={es, it, en} version={NR94, ESV, RVA15} [version is optional] search={ String to search in format "book".verse }
+// Find and return verses.
 app.get('/find',(req,res)=>{
 	const { language, version, search } = req.query;
 	const retBible = checkFun.checkParameters( language, version);
@@ -100,6 +100,35 @@ app.get('/find',(req,res)=>{
 	} else {
 	   dbBible.dbFind(db, res, retBible, retSearch['toSearch']);	
 	}
+})
+
+// Search a word or a sentence and return how many is present in each book 
+app.get('/search',(req,res)=>{
+	const { language, version, word, limit } = req.query;
+
+	const retBible = checkFun.checkParameters( language, version);
+	if ( retBible.error != null ) {
+	   res.status(400).json(retBible.error);	
+	}	
+
+	const retCheck = checkFun.checkGenericParam('word', word);
+        if ( retCheck.error ) {
+	     res.status(400).json(retCheck);
+	     return;
+	}
+
+	if ( !checkFun.checkNumeric(limit) ) {
+	   res.status(400).json(utility.retErr(400,'search','Error limit not numeric.'));
+	   return;   	
+	}
+
+	const db = dbBible.dbBible(retBible);
+	if ( db === null ) {
+	   res.status(400).json(utility.retErr(400,'search','Error Connection DB.'));
+	   return;
+	}	
+
+	dbBible.dbSearch(db, res, retBible, word, limit);
 })
 
 console.log('Starting Server ...... ');

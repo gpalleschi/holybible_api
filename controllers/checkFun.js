@@ -2,6 +2,19 @@ const Constants = require('./constants');
 const utility = require('./utility');
 const dbBible = require ('./dbBible');
 
+const checkNumeric = ( value ) => {
+	let ret = true
+	if ( typeof value != 'undefined' ) {
+	  if ( !isNaN(value) ) {
+	     ret = true;	
+          } else {
+	     ret = false;	
+  	  }
+	}
+
+	return ret;
+}
+
 // String format es. Ge.3:1-23;Le
 const checkSearch = ( search ) =>  {
 
@@ -176,5 +189,6 @@ const checkParameters = (language, version) => {
 module.exports = {
   checkParameters : checkParameters,
   checkGenericParam : checkGenericParam,
-  checkSearch : checkSearch
+  checkSearch : checkSearch,
+  checkNumeric : checkNumeric
 };
