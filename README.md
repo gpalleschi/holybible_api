@@ -1,5 +1,5 @@
 # holybible_api
-Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English) to get verses, chapters or search words, sentence.  
+Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English and Portuguese) to get verses, chapters or search words, sentence.  
 <hr />
 
 ### API
@@ -47,14 +47,7 @@ Return all bible versions loaded.
       "detailed_info": "Current Language Bible - La Bible en français courant Copyright © 1997, Société biblique française.",
       "file": "FRC97.SQLite3"
     },
-    {
-      "language": "de",
-      "name": "ELBBK",
-      "default": "Y",
-      "description": "Elberfelder Übersetzung (Version von bibelkommentare.de)",
-      "detailed_info": "Elberfelder Translation (Version of bibelkommentare.de) - Elberfelder Übersetzung (Version von bibelkommentare.de)",
-      "file": "ELBBK.SQLite3"
-    }
+    ...
   ]
 }
 ```

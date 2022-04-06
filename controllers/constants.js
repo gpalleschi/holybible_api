@@ -1,10 +1,10 @@
 // Constants
-const VERSION_SERVER = '1.4 04/04/2022 Beta';
+const VERSION_SERVER = '1.5 06/04/2022 Beta';
 const DEFAULT_PORT = 35907; 
 const DB_PATH = './db/';
 
 // Languages
-const LANGUAGES = ['it','es','en','fr','de'];
+const LANGUAGES = ['it','es','en','fr','de','pt'];
 
 // Bible Loaded
 const BIBLES_VERSIONS = [
@@ -38,6 +38,12 @@ const BIBLES_VERSIONS = [
 				'description' : 'Elberfelder Übersetzung (Version von bibelkommentare.de)',
 				'detailed_info' : 'Elberfelder Translation (Version of bibelkommentare.de) - Elberfelder Übersetzung (Version von bibelkommentare.de)', 
 				'file' : 'ELBBK.SQLite3'},
+				{'language' : 'pt',
+				'name' : 'LTT18',
+				'default' : 'Y',
+				'description' : 'Bíblia de Estudo LTT 2018',
+				'detailed_info' : 'Bíblia Literal do Texto Tradicional (com Notas de Rodapé). 2a. Edição (nov. 2018). Sem arcaísmos. Com títulos de seções.',
+				'file' : 'LTT18.SQLite3'},
 			];
 
 
