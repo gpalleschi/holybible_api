@@ -1,17 +1,52 @@
 # holybible_api
-Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English and Portuguese) to get verses, chapters or search words, sentence.  
-<hr />
+Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English and Portuguese) is a free, open source bible api to get verses, chapters or search words or sentence.  
 
-### API
+## API Reference
 
-### Versions Api
+- [Get Versions](#Versions)  
+- [Get Books](#Books)  
+- [Find verses](#Find)  
+- [Random verse](#Random)  
+- [Search a word or a sentence](#Search)  
+
+<hr/>
+
+## Versions
+
+```HTTP
+GET /versions
+```
+
 Return all bible versions loaded.
+
+**Query parameters**  
+
+None
+
+**Response**
+
+```ts
+{
+  versions: array<{
+    // Language code
+    language: string
+    // Bible version name
+    name: string
+    // Flag default
+    default: string
+    // Bible version description 
+    description: string
+    // Bible version detail info
+    detail_info: string
+    // Bible version file name
+    file: string
+  }>
+}
+```
+**Examples**
 
 `http://localhost:35907/versions`
 
-####Examples :   
-
-`http://localhost:35907/random?versions`
 ```
 {
   "versions": [
@@ -31,35 +66,57 @@ Return all bible versions loaded.
       "detailed_info": "The Holy Bible, English Standard Version. Copyright © 2001 by Crossway Bibles, a publishing ministry of Good News Publishers.",
       "file": "ESV.SQLite3"
     },
-    {
-      "language": "es",
-      "name": "RVA15",
-      "default": "Y",
-      "description": "Reina Valera Actualizada, 2015",
-      "detailed_info": "Version Reina Valera Actualizada, Copyright © 2015 by Editorial Mundo Hispano",
-      "file": "RVA15.SQLite3"
-    },
-    {
-      "language": "fr",
-      "name": "FRC97",
-      "default": "Y",
-      "description": "La Bible en français courant",
-      "detailed_info": "Current Language Bible - La Bible en français courant Copyright © 1997, Société biblique française.",
-      "file": "FRC97.SQLite3"
-    },
+    ...
     ...
   ]
 }
 ```
+<hr/>
 
-### Books Api
-Return all books
+## Books
 
-`http://localhost:35907/books?language=[Language]`
+```HTTP
+GET /books
+```
 
-####Examples :   
+Return all books available.
 
-`http://localhost:35907/random?language=en`
+**Query parameters**  
+
+| Param     | Type     | Description   | Mandatory                                                                                                                                                                                                                                                                                                                          |
+| :-------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |---|
+| language | `String`    | Language Code (ex. en, pt, it, ...) | Yes | 
+| version | `String`    | Bible Version Name | No                   |
+
+**Response**  
+
+```ts
+{
+    // Language code
+    language: string
+    // Bible version name
+    name: string
+    // Bible version description 
+    description: string
+    // Bible books list
+    books: array<{
+      // Language code
+      book_number: number
+      // Book short name
+      short_name: string
+      // Book long name
+      long_name: string
+      // Total Chapters
+      chapters: number
+      // Total verses 
+      verses: number
+    }>
+  }>
+}
+```
+**Examples**
+
+`http://localhost:35907/books?language=en`
 
 ```
 {
@@ -81,46 +138,64 @@ Return all books
       "chapters": 40,
       "verses": 1213
     },
-    {
-      "book_number": 30,
-      "short_name": "Lev",
-      "long_name": "Leviticus",
-      "chapters": 27,
-      "verses": 859
-    },
-    {
-      "book_number": 40,
-      "short_name": "Num",
-      "long_name": "Numbers",
-      "chapters": 36,
-      "verses": 1288
-    },
     ...
     ...
   ]
 }
 ```
+<hr/>
 
-### Find Api
+## Find
+
+```HTTP
+GET /find
+```
+
 Find and return verses.
 
-`http://192.168.56.210:35907/find?language=[Language]&search=[String Search]`
+**Query parameters**  
 
-Actually values for [Language] : es (spanish), it (italian), en (english), fr (french), de (german)  
+| Param     | Type     | Description   | Mandatory     | 
+| :-------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |---|
+| language | `String`    | Language Code (ex. en, pt, it, ...) | Yes | 
+| search | `String`    | Search String in format : [**book short name***].[**chapter**]:[**from verse**]-[**to verse**] <br><br>Examples :<br> Ge.1:2-3 - Genesis chapter 1 from verses 2 to 3 <br> Le.4     : Leviticus chapter 4 <br> Ru       - All Ruth  | Yes                                 |
+| version | `String`    | Bible Version Name | No                                          |
 
-Syntax for [String Search] is :
 
-[**book short name***].[**chapter**]:[**from verse**]-[**to verse**]  
-
-####Ex.
-
-Ge.1:2-3 - Genesis chapter 1 from verses 2 to 3
-Le.4     - Leviticus chapter 4
-Ru       - All Ruth
-
-You can specify more than one extraction, separating each other with character ; (Ex. Num.12:1-2;Deu.1:3;Jona:1)   
-
-####Examples :
+**Response**  
+```ts
+{
+    // Language code
+    language: string
+    // Bible version name
+    name: string
+    // Bible version description 
+    description: string
+    // Bible books list
+    books: array<{
+      // Language code
+      book_number: number
+      // Book short name
+      short_name: string
+      // Book long name
+      long_name: string
+      // Chapters list
+      chapters: array<{
+        // Chapter number
+        chapter_number: number
+        // Verses List
+        verses: array<{
+          // Verse Number
+          verse: number
+          // Verse Text
+          text: string
+        }> 
+      }> 
+    }>
+  }>
+}
+```
+**Examples**
 
 `http://localhost:35907/find?language=it&search=Ge.9:4-5;Le.10;Ru`
 
@@ -166,16 +241,58 @@ You can specify more than one extraction, separating each other with character ;
             ...
 ```
 
+<hr/>
 
-### Random Api
+## Random  
+
+```HTTP
+GET /random
+```
+
 Return a random verse.
 
-`http://localhost:35907/random?language=[Language]&book=[book short name]`
+**Query parameters**  
 
-Actually values for [Language] : es (spanish), it (italian), en (english), fr (french), de (german)  
-Book is an optional parameter.
+| Param     | Type     | Description   | Mandatory                                                                                                                                                                                                                                                                                                                          |
+| :-------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |---|
+| language | `String`    | Language Code (ex. en, pt, it, ...) | Yes | 
+| version | `String`    | Bible Version Name | No                   |
 
-####Examples :   
+
+**Response**  
+```ts
+{
+    // Language code
+    language: string
+    // Bible version name
+    name: string
+    // Bible version description 
+    description: string
+    // Books List 
+    books: array<{
+      // Language code
+      book_number: number
+      // Book short name
+      short_name: string
+      // Book long name
+      long_name: string
+      // Chapters list
+      chapters: array<{
+        // Chapter number
+        chapter_number: number
+        // Verses List
+        verses: array<{
+          // Verse Number
+          verse: number
+          // Verse Text
+          text: string
+        }> 
+      }> 
+    }>
+  }>
+}
+```
+**Examples**
 
 `http://localhost:35907/random?language=es`
 
@@ -204,21 +321,65 @@ Book is an optional parameter.
   ]
 }
 ```
+<hr/>
 
-### Search Api
+## Search
+
+```HTTP
+GET /random
+```
+
 Return verses contains a word or a sentence.
 
-`http://localhost:35907/search?language=en&word=[Language]&limit=[Limit results]`
+**Query parameters**  
 
-Actually values for [Language] : es (spanish), it (italian), en (english), fr (french), de (german)  
-word is what do you want to search.
-limit is an optional parameter to limit results.
+| Param     | Type     | Description   | Mandatory                                                                                                                                                                                                                                                                                                                          |
+| :-------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |---|
+| language | `String`    | Language Code (ex. en, pt, it, ...) | Yes | 
+| word | `String`    | Word or sentence to find | Yes                   |
+| version | `String`    | Bible Version Name | No                   |
+| limit | `Number`    | Maximum number of results | No                   |
 
-####Examples :   
 
+**Response**  
+```ts
+{
+    // Language code
+    language: string
+    // Bible version name
+    name: string
+    // Bible version description 
+    description: string
+    // String to search 
+    search: string    
+    // Total Number of matches
+    total: number    
+    // Limit Number of matches to show
+    limit: number    
+    // Results List 
+    searches: array<{
+      // Language code
+      book_number: number
+      // Book short name
+      short_name: string
+      // Book long name
+      long_name: string
+      // Chapter number
+      chapter: number
+      // Verse Number
+      verse: number
+      // Verse Text
+      text: string
+      }> 
+    }>
+  }>
+}
 ```
+**Examples**
+
 `http://localhost:35907/search?language=en&word=bread&limit=2`
 
+```
 {
   "language": "en",
   "name": "ESV",
