@@ -21,7 +21,7 @@ app.use(cors());
 const port=process.env.PORT || Constants.DEFAULT_PORT;
 
 app.get('/',(req,res)=>{
-	res.send('Server mypersonalshopper_api version ' + Constants.VERSION_SERVER + ' is running on port ' + port);
+	res.send('Server holybible_api version ' + Constants.VERSION_SERVER + ' is running on port ' + port);
 })
 
 // Return all Bibles versions loaded BIBLES_VERSIONS Constant Array
