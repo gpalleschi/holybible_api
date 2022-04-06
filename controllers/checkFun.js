@@ -157,11 +157,11 @@ const checkParameters = (language, version) => {
 			 'description' : null,
                          'bible' : null,};
 	if ( typeof language === 'undefined' ) {
-	   retValue = utility.retErr(101,'checkParameters','Error language parameter not present.');
+	   retValue.error = utility.retErr(101,'checkParameters','Error language parameter not present.');
 	}
 	else {
 	   if ( Constants.LANGUAGES.includes(language) === false ) {
-	      retValue = utility.retErr(102,'checkParameters','Error language <' + language + '> not managed.');
+	      retValue.error = utility.retErr(102,'checkParameters','Error language <' + language + '> not managed.');
 	   }
 	}
 	if ( retValue.error === null ) {
@@ -180,7 +180,7 @@ const checkParameters = (language, version) => {
            }
 
 	   if ( i === Constants.BIBLES_VERSIONS.length ) {
-	      retValue = utility.retErr(103,'checkParameters','Error Bible version <' + version + '> for languge <' + language + '> not found.');
+	      retValue.error = utility.retErr(103,'checkParameters','Error Bible version <' + version + '> for languge <' + language + '> not found.');
 	   }
 	}	
 	return retValue;

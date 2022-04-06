@@ -8,6 +8,8 @@ Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, 
 - [Find verses](#Find)  
 - [Random verse](#Random)  
 - [Search a word or a sentence](#Search)  
+- [Error Managment](#Error-Managment)
+
 
 <hr/>
 
@@ -407,6 +409,18 @@ Return verses contains a word or a sentence.
   ]
 }
 ```
+
+## Error Managment
+
+**Error Response**  
+```ts
+{
+    // Language code
+    error: number,
+    function: string,
+    description: string
+}
+```    
 
 ### Prerequisites  
 
