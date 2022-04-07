@@ -2,12 +2,12 @@ const express = require('express');
 const cors = require('cors');
 
 //import * as Constants from './controllers/constants';
+const pjson = require('./package.json');
 const Constants = require('./controllers/constants');
 const dbBible = require ('./controllers/dbBible');
 const checkFun = require ('./controllers/checkFun');
 const utility = require('./controllers/utility');
 //import { dbBible } from './controllers/dbBible.js';
-
 
 // App definition
 const app = express();
@@ -21,7 +21,7 @@ app.use(cors());
 const port=process.env.PORT || Constants.DEFAULT_PORT;
 
 app.get('/',(req,res)=>{
-	res.send('Server holybible_api version ' + Constants.VERSION_SERVER + ' is running on port ' + port);
+	res.send('Server ' + pjson.name + ' version ' + pjson.version + ' is running on port ' + port);
 })
 
 // Return all Bibles versions loaded BIBLES_VERSIONS Constant Array
@@ -134,5 +134,5 @@ app.get('/search',(req,res)=>{
 console.log('Starting Server ...... ');
 
 app.listen(port, () => {
-	console.log('Server holybible_api version ' + Constants.VERSION_SERVER + ' is running on port ' + port)
+	console.log('Server ' + pjson.name + ' version ' + pjson.version + ' is running on port ' + port)
 });

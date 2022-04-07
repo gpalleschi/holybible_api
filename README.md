@@ -328,7 +328,7 @@ Return a random verse.
 ## Search
 
 ```HTTP
-GET /random
+GET /search
 ```
 
 Return verses contains a word or a sentence.

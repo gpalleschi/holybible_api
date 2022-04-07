@@ -1,14 +1,14 @@
 {
   "name": "holybible_api",
-  "version": "1.0.0",
+  "version": "1.5.1 07/04/2022 Beta",
   "description": "Api for Holy Bible",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
   },
-  "author": "Giovanni Palleschi",
-  "license": "ISC",
+  "author": "GNNK71",
+  "license": "GPL-3.0 License",
   "dependencies": {
     "better-sqlite3": "^7.5.0",
     "cors": "^2.8.5",

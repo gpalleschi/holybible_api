@@ -1,5 +1,4 @@
 // Constants
-const VERSION_SERVER = '1.5 06/04/2022 Beta';
 const DEFAULT_PORT = 35907; 
 const DB_PATH = './db/';
 
@@ -48,7 +47,6 @@ const BIBLES_VERSIONS = [
 
 
 module.exports = {
-    VERSION_SERVER: VERSION_SERVER,
     DEFAULT_PORT: DEFAULT_PORT,
     LANGUAGES: LANGUAGES,
     DB_PATH: DB_PATH,
