@@ -56,14 +56,14 @@ app.get('/languages',(req,res)=>{
 
 // Call random passing two parameters language={es, it, en} version={NR94, ESV, RVA15, ...} [version is optional, if not present will use default version for language] 
 app.get('/random',(req,res)=>{
-	const { language, version } = req.query;
+	const { language, version, book } = req.query;
 	const retBible = checkFun.checkParameters( language, version);
 
 	if ( retBible.error === null ) {
 	  const db = dbBible.dbBible(retBible);
 
 	  if ( db != null ) {
-             dbBible.dbRandom(db, res, retBible);
+             dbBible.dbRandom(db, res, retBible, book);
 	  } else {
 	    res.status(400).json('Error Connection DB');
 	  }

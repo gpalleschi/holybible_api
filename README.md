@@ -259,6 +259,7 @@ Return a random verse.
 | :-------- | :------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |---|
 | language | `String`    | Language Code (ex. en, pt, it, ...) | Yes | 
 | version | `String`    | Bible Version Name | No                   |
+| book | `String`    | Bible Book Short Name (ex. Le, pr, ...) | No                   |
 
 
 **Response**  
@@ -296,7 +297,7 @@ Return a random verse.
 ```
 **Examples**
 
-`http://localhost:35907/random?language=es`
+`http://localhost:35907/random?language=es&book=pr`
 
 ```
 {
@@ -305,16 +306,16 @@ Return a random verse.
   "description": "Reina Valera Actualizada, 2015",
   "books": [
     {
-      "book_number": 560,
-      "short_name": "Ef",
-      "long_name": "Efesios",
+      "book_number": 240,
+      "short_name": "Pr",
+      "long_name": "Proverbios",
       "chapters": [
         {
-          "chapter": 3,
+          "chapter": 15,
           "verses": [
             {
-              "verse": 18,
-              "text": "ustedes sean plenamente capaces de comprender, junto con todos los santos, cuál es la anchura, la longitud, la altura y la profundidad,"
+              "verse": 10,
+              "text": "<t>La disciplina le parece mal al que abandona el camino, </t><t>y el que aborrece la reprensión morirá.</t>"
             }
           ]
         }

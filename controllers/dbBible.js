@@ -66,29 +66,29 @@ const dbBooks = (db, res, retBible) => {
           })   
 }
 
-const dbRandom = (db, res, retBible) => {
+const dbRandom = (db, res, retBible, book='%%') => {
 
-     db('verses').count('verse as vrs')
-     .then(count => {
-            const verse = getRandomArbitrary(1,count[0].vrs);
-            db.select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
-            .from('books')                         
-            .join('verses','books.book_number','verses.book_number')
-            .where('verses.rowid','=',verse)
-            .then( resVerse => {
-               let books = [];
-               books.push(resVerse['0']);
-               const ret = utility.formatMsg(retBible, books);
-               //res.status(200).json(Object.assign({},resVerse['0']));	
-               res.status(200).json(Object.assign({},ret));	
+     db.select('books.book_number', 'books.short_name', 'books.long_name','verses.chapter','verses.verse','verses.text')
+       .from('books')                         
+       .join('verses','books.book_number','verses.book_number')
+       .whereLike('books.short_name',book)
+       .orderByRaw('random() limit 1')
+       .then( resVerse => {
+              let books = [];
+              console.log('resVerse.length : ' + resVerse.length );
+              if ( !resVerse.length ) {
+                 res.status(401).json(utility.retErr(401,'dbRandom','Book ' + book + ' Not found.'));	
+              }
+              else {
+                 books.push(resVerse['0']);
+                 const ret = utility.formatMsg(retBible, books);
+                 //res.status(200).json(Object.assign({},resVerse['0']));	
+                 res.status(200).json(Object.assign({},ret));	
+              }
             })
-            .catch(err => {
-                res.status(401).json(utility.retErr(401,'dbRandom',err.code + ' : ' + err.message));	
-            })
-     })
-     .catch(err => {
-          res.status(401).json(utility.retErr(401,'dbRandom',err.code + ' : ' + err.message));	
-     }) 
+        .catch(err => {
+              res.status(401).json(utility.retErr(401,'dbRandom',err.code + ' : ' + err.message));	
+        })
      return;
 }
 

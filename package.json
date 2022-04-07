@@ -1,6 +1,6 @@
 {
   "name": "holybible_api",
-  "version": "1.5.1 07/04/2022 Beta",
+  "version": "1.6.0 07/04/2022 Beta",
   "description": "Api for Holy Bible",
   "main": "server.js",
   "scripts": {
