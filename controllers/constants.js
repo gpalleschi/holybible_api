@@ -3,7 +3,7 @@ const DEFAULT_PORT = 35907;
 const DB_PATH = './db/';
 
 // Languages
-const LANGUAGES = ['it','es','en','fr','de','pt'];
+const LANGUAGES = ['it','es','en','fr','de','pt','ru','uk','ro'];
 
 // Bible Loaded
 const BIBLES_VERSIONS = [
@@ -43,6 +43,24 @@ const BIBLES_VERSIONS = [
 				'description' : 'Bíblia de Estudo LTT 2018',
 				'detailed_info' : 'Bíblia Literal do Texto Tradicional (com Notas de Rodapé). 2a. Edição (nov. 2018). Sem arcaísmos. Com títulos de seções.',
 				'file' : 'LTT18.SQLite3'},
+				{'language' : 'ru',
+				'name' : 'NRT23',
+				'default' : 'Y',
+				'description' : 'The Holy Bible, New Russian Translation',
+				'detailed_info' : 'Перевод с англиского перевода NIV. Сделан качественно, но не с языка оригинала. 3-е издание исправленное и дополненное.',
+				'file' : 'NRT23.SQLite3'},
+				{'language' : 'uk',
+				'name' : 'CUV23',
+				'default' : 'Y',
+				'description' : 'Ukrainian Contemporary Version',
+				'detailed_info' : 'Українське Біблійне Товариство',
+				'file' : 'CUV23.SQLite3'},
+				{'language' : 'ro',
+				'name' : 'VDC2016',
+				'default' : 'Y',
+				'description' : 'Biblia sau Sfânta Scriptură cu Trimiteri',
+				'detailed_info' : 'British and Foreign Bible Society și Societatea Biblică Interconfesională din România',
+				'file' : 'VDC2016.SQLite3'},
 			];
 
 

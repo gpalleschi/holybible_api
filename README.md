@@ -1,5 +1,5 @@
 # holybible_api
-Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English and Portuguese) is a free, open source bible api to get verses, chapters or search words or sentence.  
+Bible API RESTful Node.js based Multilingual (Italian, Spanish, French, German, English, Portuguese, Russian, Ukrainian and Romanian) is a free, open source bible api to get verses, chapters or search words or sentence.  
 
 ## API Reference
 

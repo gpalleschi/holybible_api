@@ -1,6 +1,6 @@
 {
   "name": "holybible_api",
-  "version": "1.6.2 10/11/2024 Beta",
+  "version": "1.6.3 28/05/2025 Beta",
   "description": "Api for Holy Bible",
   "main": "server.js",
   "scripts": {
@@ -10,10 +10,10 @@
   "author": "GNNK71",
   "license": "GPL-3.0 License",
   "dependencies": {
-    "better-sqlite3": "^11.5.0",
+    "better-sqlite3": "^11.10.0",
     "cors": "^2.8.5",
-    "express": "^4.21.1",
+    "express": "^5.1.0",
     "knex": "^3.1.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.10"
   }
 }
